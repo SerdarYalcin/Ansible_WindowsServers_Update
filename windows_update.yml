@@ -5,7 +5,7 @@
   gather_facts: no
   ignore_unreachable: yes
   vars:
-          required_space: 5999999999 #This is the bit value that is converted to GB and you can update it according to your needs
+          required_space: 5999999999 #This is the bit value that is converted to GB and you can also update it according to your needs
   tasks:
 
           - name: Execute powershell
