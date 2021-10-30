@@ -1,0 +1,40 @@
+---
+-
+  hosts: host name
+  serial: 1 # you can update it according to your needs
+  gather_facts: no
+  ignore_unreachable: yes
+  vars:
+          required_space: 5999999999 #This is the bit value that is converted to GB and you can update it according to your needs
+  tasks:
+
+          - name: Execute powershell
+            win_command: powershell.exe "Get-PSDrive C | Select-Object Free | ConvertTo-Json"
+            register: getpsdrive
+
+          - name: Register disk space as a fact
+            set_fact:
+                    freediskspace: "{{ (getpsdrive.stdout | from_json).Free }}"
+
+          - name: Search and download windows updates without installing
+
+            win_updates:
+                    category_names: ['SecurityUpdates','CriticalUpdates']
+                    state: downloaded
+            when:
+                   - freediskspace | int > required_space
+
+          - name: Install all updates without a schedule tasks
+            win_updates:
+                    category_names: ['SecurityUpdates','CriticalUpdates']
+                    state: installed
+                    log_path: C:\Win_Template_Patch.log
+                    reboot: yes
+            when:
+                   - freediskspace | int > required_space
+            register: all_update
+
+
+          - name: Debug
+            debug:
+                    var: all_update
