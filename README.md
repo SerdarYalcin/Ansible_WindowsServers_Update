@@ -1,4 +1,4 @@
-# Ansible_WindowsServers_Update
+# ansible_windows_servers_update
 
 Update Windows servers if the servers have bigger than 5GB of sufficient storage space
 
